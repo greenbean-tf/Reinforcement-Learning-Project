@@ -1,0 +1,9 @@
+# Tested with Python 3.10. gym[box2d] needs swig to build Box2D (e.g. `apt-get install swig`).
+torch==2.0.1
+numpy==1.25.2
+gym[box2d]==0.26.2
+opencv-python-headless==4.8.0.76
+tensorboard==2.14.0
+matplotlib==3.7.2
+moviepy==1.0.3
+setuptools<70

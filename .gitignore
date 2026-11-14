@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# training outputs
+src/log/
+src/log_txt/
+src/video/
+*.pth
