@@ -26,6 +26,14 @@ GROUPS = {
 	"2_target_smoothing": [("smoothing on (baseline)", "baseline"), ("smoothing off", "no_smoothing")],
 	"3_delayed_update": [("update_freq=1", "delay1"), ("update_freq=2 (baseline)", "baseline"), ("update_freq=4", "delay4")],
 	"4_action_noise": [("sigma_max=0.03", "sigma0.03"), ("sigma_max=0.1 (baseline)", "baseline"), ("sigma_max=0.3", "sigma0.3")],
+	# strong setting (limits relaxed + noise decay, smoothing on): the three rewards (200k steps) and the 150k baseline
+	# final run: T_bc continued to 1M steps with a larger GPU buffer (F_bc starts from the last T_bc state at ~390k steps)
+	"8_final_run": [("T_bc (400k)", "T_bc"), ("F_bc (continued, 1M)", "F_bc")],
+	# next generation (400k steps): bigger GPU buffer, rarer evaluation, stuck rule; T_b_p300 = stuck penalty -300
+	"7_next_generation": [("baseline (150k)", "baseline"), ("S_b (200k)", "S_b"), ("T_b", "T_b"),
+	                      ("T_b, stuck penalty -300", "T_b_p300"), ("T_orig", "T_orig"), ("T_bc", "T_bc")],
+	"6_strong_setting_rewards": [("baseline (150k)", "baseline"), ("strong, original reward", "S_orig"),
+	                             ("strong, custom B", "S_b"), ("strong, custom B+C", "S_bc")],
 	"5_reward_function": [("original reward (baseline)", "baseline"), ("custom reward v1", "custom_reward"),
 	                      ("custom B", "custom_b"), ("custom B+C", "custom_bc")],
 }

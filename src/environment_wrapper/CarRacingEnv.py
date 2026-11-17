@@ -20,7 +20,8 @@ class CarRacingEnvironment:
 	B_GRASS_COEF = 0.5       # penalty per step when the whole window is grass
 	B_GRASS_THRESHOLD = 0.3  # only the grass ratio above this value is penalized
 
-	def __init__(self, N_frame=4, test=False, reward_mode="original", speed_safe=None, speed_coef=0.5):
+	def __init__(self, N_frame=4, test=False, reward_mode="original", speed_safe=None, speed_coef=0.5,
+	             stuck_speed=None, stuck_steps=50, stuck_penalty=-100.0, stuck_grace=60):
 		self.test = test
 		# "original" | "custom" (v1) | "custom_b" (grass only) | "custom_bc" (grass + speed-while-steering)
 		self.reward_mode = reward_mode
@@ -31,6 +32,13 @@ class CarRacingEnvironment:
 		self.speed_safe = speed_safe
 		self.speed_coef = speed_coef
 		self.prev_steer = None
+		# stuck rule (training env only): if the speed stays below stuck_speed for stuck_steps consecutive
+		# steps (after a start-up grace period) the episode ends with reward stuck_penalty. None = off.
+		self.stuck_speed = stuck_speed
+		self.stuck_steps = stuck_steps
+		self.stuck_penalty = stuck_penalty
+		self.stuck_grace = stuck_grace
+		self.slow_count = 0
 		self.env = gym.make('CarRacing-v2', render_mode="rgb_array")
 		self.action_space = self.env.action_space
 		self.observation_space = self.env.observation_space
@@ -100,6 +108,14 @@ class CarRacingEnvironment:
 					excess = max(0.0, speed - self.speed_safe) / self.speed_safe
 					reward -= self.speed_coef * excess * abs(float(action[0]))
 
+		if self.stuck_speed is not None and not self.test and not terminates and self.ep_len > self.stuck_grace:
+			# parking is penalized like leaving the road: too slow for too long -> terminate with stuck_penalty
+			self.slow_count = self.slow_count + 1 if speed < self.stuck_speed else 0
+			if self.slow_count >= self.stuck_steps:
+				terminates = True
+				reward = self.stuck_penalty
+				info["stuck"] = True
+
 		# convert to grayscale
 		obs = cv2.cvtColor(obs, cv2.COLOR_BGR2GRAY) # 96x96
 
@@ -123,6 +139,7 @@ class CarRacingEnvironment:
 		obs, info = self.env.reset(seed=seed)
 		self.ep_len = 0
 		self.prev_steer = None
+		self.slow_count = 0
 		obs = cv2.cvtColor(obs, cv2.COLOR_BGR2GRAY) # 96x96
 
 		# frame stacking

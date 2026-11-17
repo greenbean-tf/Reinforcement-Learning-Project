@@ -32,7 +32,7 @@ class ActorNetSimple(nn.Module):
             nn.Tanh()
         )
 
-    def forward(self, state, brake_rate=0.015):
+    def forward(self, state, brake_rate=0.015, gas_floor=0.1):
         state = state.float() / 255.0
         h = self.conv(state)
         h = torch.flatten(h, start_dim=1)
@@ -41,7 +41,7 @@ class ActorNetSimple(nn.Module):
         h_clone = h.clone()
         # map to valid action space: {steer:[-1, 1], gas:[0, 1], brake:[0, 1]}
         h_clone[:, 0] = (h_clone[:, 0])
-        h_clone[:, 1] = (h_clone[:, 1]+1) * 0.5 + 0.1
+        h_clone[:, 1] = (h_clone[:, 1]+1) * 0.5 + gas_floor
         h_clone[:, 2] = (h_clone[:, 2]+1) * brake_rate
         
         return h_clone

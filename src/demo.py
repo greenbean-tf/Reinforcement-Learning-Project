@@ -36,6 +36,7 @@ config = {
 
 agent = CarRacingTD3Agent(config)
 agent.load(args.model)
+print(f"action limits used (brake_rate, gas_floor): {agent.limits()}")
 
 # test_env uses render_mode="rgb_array"; env.env is the underlying gym env that can render frames.
 # Frames are grabbed by hand (not with gym's RecordVideo): RecordVideo only ends a video when the
