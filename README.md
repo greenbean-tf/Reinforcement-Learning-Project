@@ -11,7 +11,13 @@ The project has three parts:
 3. Several training-pipeline improvements. Together they raised the average score on 20 tracks from
    **578 to 865**.
 
-![Final run](results/8_final_run.png)
+<p align="center">
+  <img src="media/final_lap_seed3128.gif" width="450" alt="The final model driving a full lap on a held-out track">
+</p>
+<p align="center">
+  <em>The final model drives a full lap on a held-out track (seed 3128): 897 steps, score 910. Shown at real
+  speed from the agent's top-down view. <a href="media/final_lap_seed3128.mp4">Original video (MP4)</a></em>
+</p>
 
 ## Headline result
 
@@ -96,6 +102,8 @@ For example, the `F_bc` checkpoint at step 960k averaged only 454, while the one
 
 ![Stage 4 runs](results/7_next_generation.png)
 
+![Stage 5: final run](results/8_final_run.png)
+
 ## Ablation study (stage 2, 150k steps)
 
 | Run | Change from the baseline | Best eval | Last eval |
@@ -171,6 +179,7 @@ src/
 ├── plot_results.py               # TensorBoard logs → comparison plots and summary.csv
 └── demo.py                       # run a checkpoint and record one video per track
 results/                          # plots for every stage and summary.csv
+media/                            # video of the final model on a held-out track
 ```
 
 ## Setup
